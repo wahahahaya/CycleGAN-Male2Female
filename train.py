@@ -20,9 +20,9 @@ import itertools
 
 def train():
     # Parameters
-    epochs = 5
+    epochs = 200
     epoch = 0
-    decay_epoch = 1
+    decay_epoch = 100
     sample_interval = 100
     dataset_name = "horse2zebra"
     img_height = 256
@@ -33,16 +33,17 @@ def train():
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
     #print('GPU State:', device)
-
     Tensor = torch.cuda.FloatTensor if device else torch.Tensor
 
     # image transformations
+    # resize (100,100) 會間接影響到Discriminator的輸出size 如果要改 model.py 麻煩也要改
     data_process_steps = [
         transforms.Resize((100,100)),
         transforms.ToTensor(),
         transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),
     ]
 
+    # 路徑麻煩你們自己改 然後dataset格式一定要像下面那樣
     # data loader
     # gender
     # |-testA
@@ -115,6 +116,7 @@ def train():
     fake_A_buffer = ReplayBuffer()
     fake_B_buffer = ReplayBuffer()
 
+    #這邊就是輸出的影像 如果要呈現更多影像 改這邊
     def sample_images(batches_done):
         """Saves a generated sample from the test set"""
         imgs = next(iter(test_data))
