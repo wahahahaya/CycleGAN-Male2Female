@@ -20,10 +20,10 @@ import itertools
 
 def train():
     # Parameters
-    epochs = 20
-    epoch = 0
-    decay_epoch = 10
-    sample_interval = 10
+    epochs = 200
+    last_epoch = 0
+    decay_epoch = 100
+    sample_interval = 100
     dataset_name = "horse2zebra"
     img_height = 256
     img_width = 256
@@ -140,9 +140,18 @@ def train():
     D_l=[]
     ADV_l=[]
     CYC_l=[]
-    ID_l=[]
+    ID_l = []
+
+    # load model (如果沒有自己註解掉 這邊的目的是你可以把上次train的參數輸入進去 繼續訓練)
+    Gen_AB.load_state_dict(torch.load("C:/Users/a8701/NTUST_dissertation/deep_learning_final/saved_models/horse2zebra/G_AB_%s.pth"%last_epoch))
+    Gen_BA.load_state_dict(torch.load("C:/Users/a8701/NTUST_dissertation/deep_learning_final/saved_models/horse2zebra/Gen_BA_%s.pth"%last_epoch))
+    Dis_A.load_state_dict(torch.load("C:/Users/a8701/NTUST_dissertation/deep_learning_final/saved_models/horse2zebra/Dis_A_%s.pth"%last_epoch))
+    Dis_B.load_state_dict(torch.load("C:/Users/a8701/NTUST_dissertation/deep_learning_final/saved_models/horse2zebra/Dis_B_%s.pth" % last_epoch))
+    opt_G.load_state_dict(torch.load("C:/Users/a8701/NTUST_dissertation/deep_learning_final/saved_models/horse2zebra/opt_G_%s.pth" % last_epoch))
+    opt_D_A.load_state_dict(torch.load("C:/Users/a8701/NTUST_dissertation/deep_learning_final/saved_models/horse2zebra/opt_D_A_%s.pth" % last_epoch))
+    opt_D_B.load_state_dict(torch.load("C:/Users/a8701/NTUST_dissertation/deep_learning_final/saved_models/horse2zebra/opt_D_B_%s.pth" % last_epoch))
     
-    for epoch in range(epochs):
+    for epoch in range(last_epoch, epochs):
         G_ll=[]
         D_ll=[]
         ADV_ll=[]
@@ -192,7 +201,6 @@ def train():
 
             # Total loss
             loss_G = loss_GAN + 10.0 * loss_cycle + 5.0 * loss_identity
-            print(loss_G)
 
             loss_G.backward()
             opt_G.step()
@@ -244,19 +252,21 @@ def train():
             G_ll.append(loss_G.item())
             D_ll.append(loss_D.item())
             ADV_ll.append(loss_GAN.item())
-            CYC_ll.append(lodd_cucle.item())
+            CYC_ll.append(loss_cycle.item())
             ID_ll.append(loss_identity.item())
+
             print("Epoch: {}/{}, Batch: {}/{}, D loss: {:.4f}, G loss: {:.4f}, adv loss: {:.4f}, cycle loss: {:.4f}, idenity: {:.4f}".format(epoch,epochs,i,len(train_data),loss_D.item(),loss_G.item(),loss_GAN.item(),loss_cycle.item(),loss_identity.item()))
             
             # If at sample interval save image
             if batches_done % sample_interval == 0:
                 sample_images(batches_done)
         
-        G_l.append(G_ll.mean())
-        D_l.append(D_ll.mean())
-        ADV_l.append(ADV_ll.mean())
-        CYC_l.append(CYC_ll.mean())
-        ID_l.append(ID_ll.mean())
+        G_l.append(sum(G_ll) / len(G_ll))
+        D_l.append(sum(D_ll) / len(D_ll))
+        ADV_l.append(sum(ADV_ll) / len(ADV_ll))
+        CYC_l.append(sum(CYC_ll) / len(CYC_ll))
+        ID_l.append(sum(ID_ll) / len(ID_ll))
+
         # Update learning rates
         lr_scheduler_G.step()
         lr_scheduler_D_A.step()
@@ -270,6 +280,11 @@ def train():
         torch.save(opt_G.state_dict(), "saved_models/%s/opt_G_%d.pth" % (dataset_name, epoch))
         torch.save(opt_D_A.state_dict(), "saved_models/%s/opt_D_A_%d.pth" % (dataset_name, epoch))
         torch.save(opt_D_B.state_dict(), "saved_models/%s/opt_D_B_%d.pth" % (dataset_name, epoch))
+    
+    with open("loss.txt", "w") as f:
+        for i in G_l:
+            f.write("%f " % i)
+
 
 
 if __name__ == "__main__":
