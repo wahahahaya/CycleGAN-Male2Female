@@ -20,14 +20,14 @@ import itertools
 
 def train():
     # Parameters
-    epochs = 200
+    epochs = 5
     
     # 這邊根據你上次train完的epoch決定
-    last_epoch = 0
+    last_epoch = 1
     
-    decay_epoch = 100
+    decay_epoch = 1
     sample_interval = 100
-    dataset_name = "male2female"
+    dataset_name = "horse2zebra"
     img_height = 256
     img_width = 256
     channels = 3
@@ -56,7 +56,7 @@ def train():
 
     train_data = DataLoader(
         ImageDataset(
-            "C:/Users/a8701/NTUST_dissertation/dataset/male2female/male2female",
+            "C:/Users/a8701/NTUST_dissertation/dataset/horse2zebra/horse2zebra",
             transforms_=data_process_steps,
             unaligned=True,
         ),
@@ -68,7 +68,7 @@ def train():
 
     test_data = DataLoader(
         ImageDataset(
-            "C:/Users/a8701/NTUST_dissertation/dataset/male2female/male2female",
+            "C:/Users/a8701/NTUST_dissertation/dataset/horse2zebra/horse2zebra",
             transforms_=data_process_steps,
             unaligned=True,
             mode="test",
@@ -106,13 +106,13 @@ def train():
 
     # Learning rate update schedulers
     lr_scheduler_G = torch.optim.lr_scheduler.LambdaLR(
-        opt_G, lr_lambda=LambdaLR(epochs, epoch, decay_epoch).step
+        opt_G, lr_lambda=LambdaLR(epochs, last_epoch, decay_epoch).step
     )
     lr_scheduler_D_A = torch.optim.lr_scheduler.LambdaLR(
-        opt_D_A, lr_lambda=LambdaLR(epochs, epoch, decay_epoch).step
+        opt_D_A, lr_lambda=LambdaLR(epochs, last_epoch, decay_epoch).step
     )
     lr_scheduler_D_B = torch.optim.lr_scheduler.LambdaLR(
-        opt_D_B, lr_lambda=LambdaLR(epochs, epoch, decay_epoch).step
+        opt_D_B, lr_lambda=LambdaLR(epochs, last_epoch, decay_epoch).step
     )
 
     # Buffers of previously generated samples
@@ -143,14 +143,14 @@ def train():
 
     # load model (如果沒有自己註解掉 這邊的目的是你可以把上次train的參數輸入進去 繼續訓練)
     Gen_AB.load_state_dict(torch.load("C:/Users/a8701/NTUST_dissertation/deep_learning_final/saved_models/horse2zebra/G_AB_%s.pth"%last_epoch))
-    Gen_BA.load_state_dict(torch.load("C:/Users/a8701/NTUST_dissertation/deep_learning_final/saved_models/horse2zebra/Gen_BA_%s.pth"%last_epoch))
-    Dis_A.load_state_dict(torch.load("C:/Users/a8701/NTUST_dissertation/deep_learning_final/saved_models/horse2zebra/Dis_A_%s.pth"%last_epoch))
-    Dis_B.load_state_dict(torch.load("C:/Users/a8701/NTUST_dissertation/deep_learning_final/saved_models/horse2zebra/Dis_B_%s.pth" % last_epoch))
+    Gen_BA.load_state_dict(torch.load("C:/Users/a8701/NTUST_dissertation/deep_learning_final/saved_models/horse2zebra/G_BA_%s.pth"%last_epoch))
+    Dis_A.load_state_dict(torch.load("C:/Users/a8701/NTUST_dissertation/deep_learning_final/saved_models/horse2zebra/D_A_%s.pth"%last_epoch))
+    Dis_B.load_state_dict(torch.load("C:/Users/a8701/NTUST_dissertation/deep_learning_final/saved_models/horse2zebra/D_B_%s.pth" % last_epoch))
     opt_G.load_state_dict(torch.load("C:/Users/a8701/NTUST_dissertation/deep_learning_final/saved_models/horse2zebra/opt_G_%s.pth" % last_epoch))
     opt_D_A.load_state_dict(torch.load("C:/Users/a8701/NTUST_dissertation/deep_learning_final/saved_models/horse2zebra/opt_D_A_%s.pth" % last_epoch))
     opt_D_B.load_state_dict(torch.load("C:/Users/a8701/NTUST_dissertation/deep_learning_final/saved_models/horse2zebra/opt_D_B_%s.pth" % last_epoch))
     
-    for epoch in range(last_epoch, epochs):
+    for epoch in range(last_epoch+1, epochs):
         G_ll=[]
         for i, batch in enumerate(train_data):
             
