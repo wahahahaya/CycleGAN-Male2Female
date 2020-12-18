@@ -136,7 +136,18 @@ def train():
         save_image(image_grid, "Images/%s/%s.png" % (dataset_name, batches_done), normalize=False)
 
     # train
+    G_l=[]
+    D_l=[]
+    ADV_l=[]
+    CYC_l=[]
+    ID_l=[]
+    
     for epoch in range(epochs):
+        G_ll=[]
+        D_ll=[]
+        ADV_ll=[]
+        CYC_ll=[]
+        ID_ll=[]
         for i, batch in enumerate(train_data):
             
             # Set model input
@@ -230,13 +241,22 @@ def train():
             # Log progress
             #
             batches_done = epoch * len(train_data) + i
-
+            G_ll.append(loss_G.item())
+            D_ll.append(loss_D.item())
+            ADV_ll.append(loss_GAN.item())
+            CYC_ll.append(lodd_cucle.item())
+            ID_ll.append(loss_identity.item())
             print("Epoch: {}/{}, Batch: {}/{}, D loss: {:.4f}, G loss: {:.4f}, adv loss: {:.4f}, cycle loss: {:.4f}, idenity: {:.4f}".format(epoch,epochs,i,len(train_data),loss_D.item(),loss_G.item(),loss_GAN.item(),loss_cycle.item(),loss_identity.item()))
             
             # If at sample interval save image
             if batches_done % sample_interval == 0:
                 sample_images(batches_done)
-            
+        
+        G_l.append(G_ll.mean())
+        D_l.append(D_ll.mean())
+        ADV_l.append(ADV_ll.mean())
+        CYC_l.append(CYC_ll.mean())
+        ID_l.append(ID_ll.mean())
         # Update learning rates
         lr_scheduler_G.step()
         lr_scheduler_D_A.step()
