@@ -20,10 +20,10 @@ import itertools
 
 def train():
     # Parameters
-    epochs = 200
+    epochs = 20
     epoch = 0
-    decay_epoch = 100
-    sample_interval = 100
+    decay_epoch = 10
+    sample_interval = 10
     dataset_name = "horse2zebra"
     img_height = 256
     img_width = 256
@@ -262,10 +262,16 @@ def train():
         lr_scheduler_D_A.step()
         lr_scheduler_D_B.step()
 
+        
         torch.save(Gen_AB.state_dict(), "saved_models/%s/G_AB_%d.pth" % (dataset_name, epoch))
         torch.save(Gen_BA.state_dict(), "saved_models/%s/G_BA_%d.pth" % (dataset_name, epoch))
         torch.save(Dis_A.state_dict(), "saved_models/%s/D_A_%d.pth" % (dataset_name, epoch))
         torch.save(Dis_B.state_dict(), "saved_models/%s/D_B_%d.pth" % (dataset_name, epoch))
+        torch.save(opt_G.state_dict(), "saved_models/%s/opt_G_%d.pth" % (dataset_name, epoch))
+        torch.save(opt_D_A.state_dict(), "saved_models/%s/opt_D_A_%d.pth" % (dataset_name, epoch))
+        torch.save(opt_D_B.state_dict(), "saved_models/%s/opt_D_B_%d.pth" % (dataset_name, epoch))
+        torch.save(opt_D_B.state_dict(), "saved_models/%s/opt_D_B_%d.pth" % (dataset_name, epoch))
+
 
 if __name__ == "__main__":
     train()
