@@ -33,7 +33,7 @@ def train():
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
     #print('GPU State:', device)
-    Tensor = torch.cuda.FloatTensor if device else torch.Tensor
+    Tensor = torch.cuda.FloatTensor if device=='cuda' else torch.Tensor
 
     # image transformations
     # resize (100,100) 會間接影響到Discriminator的輸出size 如果要改 model.py 麻煩也要改
