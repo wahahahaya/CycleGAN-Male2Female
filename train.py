@@ -227,7 +227,7 @@ def train():
 
             # Fake loss (on batch of previously generated samples)
             fake_B_ = fake_B_buffer.push_and_pop(fake_B)
-            loss_fake = criterion_GAN(Dis_B(fake_B.detach()), fake)
+            loss_fake = criterion_GAN(Dis_B(fake_B_.detach()), fake)
 
             # Total loss
             loss_D_B = (loss_real + loss_fake) / 2
