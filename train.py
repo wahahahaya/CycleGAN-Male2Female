@@ -270,7 +270,6 @@ def train():
         torch.save(opt_G.state_dict(), "saved_models/%s/opt_G_%d.pth" % (dataset_name, epoch))
         torch.save(opt_D_A.state_dict(), "saved_models/%s/opt_D_A_%d.pth" % (dataset_name, epoch))
         torch.save(opt_D_B.state_dict(), "saved_models/%s/opt_D_B_%d.pth" % (dataset_name, epoch))
-        #torch.save(opt_D_B.state_dict(), "saved_models/%s/opt_D_B_%d.pth" % (dataset_name, epoch))
 
 
 if __name__ == "__main__":
