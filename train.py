@@ -23,11 +23,11 @@ def train():
     epochs = 5
     
     # 這邊根據你上次train完的epoch決定
-    last_epoch = 1
+    last_epoch = 0
     
     decay_epoch = 1
     sample_interval = 100
-    dataset_name = "horse2zebra"
+    dataset_name = "male2female"
     img_height = 256
     img_width = 256
     channels = 3
@@ -56,7 +56,7 @@ def train():
 
     train_data = DataLoader(
         ImageDataset(
-            "C:/Users/a8701/NTUST_dissertation/dataset/horse2zebra/horse2zebra",
+            "C:/Users/a8701/NTUST_dissertation/dataset/horse2zebra/male2female",
             transforms_=data_process_steps,
             unaligned=True,
         ),
@@ -68,7 +68,7 @@ def train():
 
     test_data = DataLoader(
         ImageDataset(
-            "C:/Users/a8701/NTUST_dissertation/dataset/horse2zebra/horse2zebra",
+            "C:/Users/a8701/NTUST_dissertation/dataset/horse2zebra/male2female",
             transforms_=data_process_steps,
             unaligned=True,
             mode="test",
@@ -142,13 +142,13 @@ def train():
     G_l=[]
 
     # load model (如果沒有自己註解掉 這邊的目的是你可以把上次train的參數輸入進去 繼續訓練)
-    Gen_AB.load_state_dict(torch.load("C:/Users/a8701/NTUST_dissertation/deep_learning_final/saved_models/horse2zebra/G_AB_%s.pth"%last_epoch))
-    Gen_BA.load_state_dict(torch.load("C:/Users/a8701/NTUST_dissertation/deep_learning_final/saved_models/horse2zebra/G_BA_%s.pth"%last_epoch))
-    Dis_A.load_state_dict(torch.load("C:/Users/a8701/NTUST_dissertation/deep_learning_final/saved_models/horse2zebra/D_A_%s.pth"%last_epoch))
-    Dis_B.load_state_dict(torch.load("C:/Users/a8701/NTUST_dissertation/deep_learning_final/saved_models/horse2zebra/D_B_%s.pth" % last_epoch))
-    opt_G.load_state_dict(torch.load("C:/Users/a8701/NTUST_dissertation/deep_learning_final/saved_models/horse2zebra/opt_G_%s.pth" % last_epoch))
-    opt_D_A.load_state_dict(torch.load("C:/Users/a8701/NTUST_dissertation/deep_learning_final/saved_models/horse2zebra/opt_D_A_%s.pth" % last_epoch))
-    opt_D_B.load_state_dict(torch.load("C:/Users/a8701/NTUST_dissertation/deep_learning_final/saved_models/horse2zebra/opt_D_B_%s.pth" % last_epoch))
+    Gen_AB.load_state_dict(torch.load("saved_models/male2female/G_AB_%s.pth"%last_epoch))
+    Gen_BA.load_state_dict(torch.load("saved_models/male2female/G_BA_%s.pth"%last_epoch))
+    Dis_A.load_state_dict(torch.load("saved_models/male2female/D_A_%s.pth"%last_epoch))
+    Dis_B.load_state_dict(torch.load("saved_models/male2female/D_B_%s.pth" % last_epoch))
+    opt_G.load_state_dict(torch.load("saved_models/male2female/opt_G_%s.pth" % last_epoch))
+    opt_D_A.load_state_dict(torch.load("saved_models/male2female/opt_D_A_%s.pth" % last_epoch))
+    opt_D_B.load_state_dict(torch.load("saved_models/male2female/opt_D_B_%s.pth" % last_epoch))
     
     for epoch in range(last_epoch+1, epochs):
         G_ll=[]
